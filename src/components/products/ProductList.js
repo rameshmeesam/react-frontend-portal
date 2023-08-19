@@ -1,36 +1,38 @@
-import '../../tailwind.css';
-//import './tailwind.css';
-//import Men from "./components/fashion/men";
-
-
-import useAxios from '../hooks/useAxios';
-import Product from './Product';
-import { createContext } from 'react';
+import "../../tailwind.css";
+import useAxios from "../hooks/useAxios";
+import Product from "./Product";
+import { createContext, useState } from "react";
+import Header from "../Header";
+import Footer from "../Footer";
 
 export const ProductsContext = createContext();
 
-
-
 const ProductList = () => {
-  const { response, isLoading, error, fetchData } = useAxios(`search/photos?page=1&query=t-shirt&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
+  const [searchText, setSearchText] = useState("t-shirt");
+  const { response, isLoading, error, fetchData } = useAxios(
+    `search/photos?page=1&query=${searchText}&client_id=${process.env.REACT_APP_ACCESS_KEY}`
+  );
   console.log(response);
 
+  const handleSearchText = (value) => {
+    setSearchText(value);
+  };
+
   const data = {
-    products : response,
+    products: response,
     isLoading,
     error,
-    fetchData
-  }
-  
+    fetchData,
+    searchHandler: handleSearchText,
+  };
 
-  return ( 
-      <ProductsContext.Provider value={data}>
-       <Product />
-      </ProductsContext.Provider>
-    
+  return (
+    <ProductsContext.Provider value={data}>
+      <Header />
+      <Product />
+      <Footer />
+    </ProductsContext.Provider>
   );
 };
 
 export default ProductList;
-
-
